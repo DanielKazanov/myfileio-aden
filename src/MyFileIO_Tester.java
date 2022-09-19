@@ -23,6 +23,13 @@ public class MyFileIO_Tester {
 		   Then write a new file (in output/ directory), save and close,
 		   then read it...
 		   */
+		
+		System.out.println("Expected: true Actual: " + fileIO.createEmptyFile("Daniel's File"));
+		
+		System.out.println("Expected: true Actual: " + fileIO.deleteFile("Daniel's File"));
+		
+		System.out.println("Expected: false Actual: " + fileIO.deleteFile("NOT Daniel's File"));
+		
 	}
 
 }

@@ -31,6 +31,9 @@ public class MyFileIO {
 	 * @return  File object which contains information about the file
 	 */
 	public File getFileHandle (String filename) {
+		if (filename == null) {
+			return null;
+		}
 		return (new File(filename));
 	}
 	
@@ -54,7 +57,21 @@ public class MyFileIO {
 	 */
 	public boolean createEmptyFile(String filename) {
 	    boolean status = false;
-	    // TODO: Implement this method
+
+	    File file = getFileHandle(filename);
+		    
+		if ("".equals(file.getName()) || file.exists()) {
+			status = false;
+		}
+		try {
+			status = file.createNewFile();
+		} catch (IOException ev) {
+			System.out.println("Error: IOException");
+			ev.printStackTrace();
+		} catch (SecurityException ev) {
+			System.out.println("Error: SecurityException");
+			ev.printStackTrace();
+		}
 	    return status;
 	}
 	
@@ -77,7 +94,19 @@ public class MyFileIO {
 	 */
 	public boolean deleteFile(String filename) {
 	    boolean status = false;
-	    //TODO: Implement this method
+	    
+	    File file = getFileHandle(filename);
+	    
+	    if ("".equals(file.getName()) || !file.exists() || !file.isFile()) {
+	    	status = false;
+	    }
+	    try {
+	    	status = file.delete();
+	    } catch (SecurityException ev) {
+	    	System.out.println("Error: SecurityException");
+	    	ev.printStackTrace();
+	    }
+	    
 	    return status;	
 	}	
 
@@ -110,7 +139,38 @@ public class MyFileIO {
 	 *        constants defined at the top of the file.
 	 */
 	public int checkTextFile(File file, boolean read) {
-		//TODO: implement this code
+		if (read) {
+			if ("".equals(file.getName())) {
+				return EMPTY_NAME;
+			}
+			
+			// Conditions to read the file:
+			if (!file.exists()) {
+				return FILE_DOES_NOT_EXIST;
+			} else if (!file.isFile()) {
+				return NOT_A_FILE;
+			} else if (file.length() == 0) {
+				return READ_ZERO_LENGTH;
+			} else if (!file.canRead()) {
+				return NO_READ_ACCESS;
+			}
+		} else {
+			if ("".equals(file.getName())) {
+				return EMPTY_NAME;
+			}
+			
+			// Conditions to write the file:
+			if (!file.exists()) {
+				return FILE_OK;
+			} else if (!file.exists()) {
+				return FILE_DOES_NOT_EXIST;
+			} else if (!file.canWrite()) {
+				return NO_WRITE_ACCESS;
+			} else if (!file.isFile()) {
+				return NOT_A_FILE;
+			}
+			return WRITE_EXISTS;
+		}
 		return FILE_OK;
 	}
 	
@@ -125,7 +185,14 @@ public class MyFileIO {
 	 */
 	public FileReader openFileReader(File file) {
 		FileReader fr = null;
-		//TODO - implement this method	
+		
+		try {
+			fr = new FileReader(file);
+		} catch (IOException ev) {
+			System.out.println("Error: IOException");
+			ev.printStackTrace();
+		}
+		
 		return fr;
 	}
 	
@@ -140,7 +207,14 @@ public class MyFileIO {
 	 */
 	public FileWriter openFileWriter(File file) {
 		FileWriter fw = null;
-		//TODO: Implement this method
+		
+		try {
+			fw = new FileWriter(file, true);
+		} catch (IOException ev) {
+			System.out.println("Error: IOException");
+			ev.printStackTrace();
+		}
+		
 		return fw;
 	}
 	
@@ -152,7 +226,14 @@ public class MyFileIO {
 	 */
 	public BufferedReader openBufferedReader(File file) {
 		BufferedReader br = null;
-		//TODO: Implement this method
+		
+		try {
+			br = new BufferedReader(new FileReader(file));
+		} catch (IOException ev) {
+			System.out.println("Error: IOException");
+			ev.printStackTrace();
+		}
+		
 		return br;
 	}
 	
@@ -164,7 +245,14 @@ public class MyFileIO {
 	 */
 	public BufferedWriter openBufferedWriter(File file) {
 		BufferedWriter bw = null;
-		//TODO: Implement this method
+	
+		try {
+			bw = new BufferedWriter(new FileWriter(file));
+		} catch (IOException ev) {
+			System.out.println("Error: IOException");
+			ev.printStackTrace();
+		}
+		
 		return bw;
 	}
 	
@@ -176,7 +264,12 @@ public class MyFileIO {
 	 * @param fr the FileReader object
 	 */
 	public void closeFile(FileReader fr) {
-		//TODO: Implement this method
+		try {
+			fr.close();
+		} catch (IOException ev) {
+			System.out.println("Error: IOException");
+			ev.printStackTrace();
+		}
 	}
 	
 	/**
@@ -187,7 +280,13 @@ public class MyFileIO {
 	 * @param fw the FileWriter object
 	 */
 	public void closeFile(FileWriter fw) {
-		//TODO: Implement this method
+		try {
+			fw.flush();
+			fw.close();
+		} catch (IOException ev){
+			System.out.println("Error: IOException");
+			ev.printStackTrace();
+		}
 	}
 
 	/**
@@ -198,7 +297,12 @@ public class MyFileIO {
 	 * @param br the BufferedReader object
 	 */
 	public void closeFile(BufferedReader br) {
-		//TODO: Implement this method
+		try {
+			br.close();
+		} catch (IOException ev){
+			System.out.println("Error: IOException");
+			ev.printStackTrace();
+		}
 	}
 
 	/**
@@ -209,7 +313,13 @@ public class MyFileIO {
 	 * @param bw the BufferedWriter object
 	 */
 	public void closeFile(BufferedWriter bw) {
-		//TODO: Implement this method
+		try {
+			bw.flush();
+			bw.close();
+		} catch (IOException ev){
+			System.out.println("Error: IOException");
+			ev.printStackTrace();
+		}
 	}
 
 }
