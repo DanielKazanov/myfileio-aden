@@ -84,7 +84,32 @@ public class BenchmarkFileAccess {
 	 * using the BufferedReader instead.
 	 */
 	private void benchmarkBufferedReader() {
-		//TODO: Write this method. 
+		long start=0, stop=0;
+		initResults();
+		System.out.println("Executing FileReader Benchmark");
+		for (int fileNum = 0; fileNum < NUM_FILES; fileNum++ ) {
+			File fh = fileIO.getFileHandle("data/test_"+fileNum);
+			System.out.println("Benchmarking "+fh.getName()+":");
+			if (fileIO.checkTextFile(fh, true) == MyFileIO.FILE_OK) {
+				long fileLength = fh.length();
+				for (int iter = 0; iter < NUM_ITER; iter++) {
+					System.out.println("   Iteration: "+iter);
+					BufferedReader fr = fileIO.openBufferedReader(fh);
+					try {
+						start = System.nanoTime();
+						for (int charCnt = 0; charCnt < fileLength; charCnt++) {
+							fr.read();
+						}
+						stop = System.nanoTime();
+					} catch (IOException e) {
+						System.out.println("IO Exception occurred while reading data/text_"+fileNum);
+						e.printStackTrace();
+					}
+					fileIO.closeFile(fr);
+					results[fileNum][iter] = stop - start;
+				}
+			}
+		}
 	}
 	
 	/**
@@ -95,7 +120,32 @@ public class BenchmarkFileAccess {
 	 * 3) after you close the file, you should delete it using the methods in fileIO....
 	 */
 	private void benchmarkFileWriter() {
-		//TODO: Implement this method...
+		long start=0, stop=0;
+		initResults();
+		System.out.println("Executing FileReader Benchmark");
+		for (int fileNum = 0; fileNum < NUM_FILES; fileNum++ ) {
+			File fh = fileIO.getFileHandle("data2/test_"+fileNum);
+			System.out.println("Benchmarking "+fh.getName()+":");
+			if (fileIO.checkTextFile(fh, true) == MyFileIO.FILE_OK) {
+				for (int iter = 0; iter < NUM_ITER; iter++) {
+					System.out.println("   Iteration: "+iter);
+					FileWriter fr = fileIO.openFileWriter(fh);
+					try {
+						start = System.nanoTime();
+						for (int charCnt = 0; charCnt < CHARS_PER_FILE[fileNum]; charCnt++) {
+							fr.write(1);
+						}
+						stop = System.nanoTime();
+					} catch (IOException e) {
+						System.out.println("IO Exception occurred while reading data/text_"+fileNum);
+						e.printStackTrace();
+					}
+					fileIO.closeFile(fr);
+					fileIO.deleteFile(fh.getName());
+					results[fileNum][iter] = stop - start;
+				}
+			}
+		}
 	}
 	
 	/**
@@ -103,7 +153,32 @@ public class BenchmarkFileAccess {
 	 * using BufferedWriter instead of FileWriter
 	 */
 	private void benchmarkBufferedWriter() {
-		//TODO: Implement this method...
+		long start=0, stop=0;
+		initResults();
+		System.out.println("Executing FileReader Benchmark");
+		for (int fileNum = 0; fileNum < NUM_FILES; fileNum++ ) {
+			File fh = fileIO.getFileHandle("data2/test_"+fileNum);
+			System.out.println("Benchmarking "+fh.getName()+":");
+			if (fileIO.checkTextFile(fh, true) == MyFileIO.FILE_OK) {
+				for (int iter = 0; iter < NUM_ITER; iter++) {
+					System.out.println("   Iteration: "+iter);
+					BufferedWriter fr = fileIO.openBufferedWriter(fh);
+					try {
+						start = System.nanoTime();
+						for (int charCnt = 0; charCnt < CHARS_PER_FILE[fileNum]; charCnt++) {
+							fr.write(1);
+						}
+						stop = System.nanoTime();
+					} catch (IOException e) {
+						System.out.println("IO Exception occurred while reading data/text_"+fileNum);
+						e.printStackTrace();
+					}
+					fileIO.closeFile(fr);
+					fileIO.deleteFile(fh.getName());
+					results[fileNum][iter] = stop - start;
+				}
+			}
+		}
 	}
 	
 	/**
@@ -154,12 +229,12 @@ public class BenchmarkFileAccess {
 		BenchmarkFileAccess bmfa = new BenchmarkFileAccess();
 		bmfa.benchmarkFileReader();
 		bmfa.printResults("FileReader Benchmark");
-//		bmfa.benchmarkBufferedReader();
-//		bmfa.printResults("BufferedReader Benchmark");
-//		bmfa.benchmarkFileWriter();
-//		bmfa.printResults("FileWriter Benchmark");
-//		bmfa.benchmarkBufferedWriter();
-//		bmfa.printResults("BufferedWriter Benchmark");
+		bmfa.benchmarkBufferedReader();
+		bmfa.printResults("BufferedReader Benchmark");
+		bmfa.benchmarkFileWriter();
+		bmfa.printResults("FileWriter Benchmark");
+		bmfa.benchmarkBufferedWriter();
+		bmfa.printResults("BufferedWriter Benchmark");
 	}
 
 }

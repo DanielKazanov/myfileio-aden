@@ -16,8 +16,9 @@ public class RegularExpressions {
 	 * @return the swapped string
 	 */
 	String swapLastFirst(String in) {
-		// TODO: Implement this method - it should be no more than 2 lines
-		return null;
+//		in = in.replaceAll("\\s", "");
+//		return in.replaceAll("\\S+(?=,)", "(?<=\\,)\\S+") + " " + in.replaceAll("(?<=\\,)\\S+", "\\S+(?=,)");
+		return in.replaceAll("\\s*(\\w*)\\s*,\\s*(\\w*)\\s*", "$2 $1");
 	}
 
 	/**
@@ -32,8 +33,7 @@ public class RegularExpressions {
 	 *         operators.
 	 */
 	String padTokensWithSpaces(String in) {
-		//TODO: Implement this method - it should be no more than 2-3 lines
-		return null;
+		return in.replaceAll("(\\-|\\+|\\*|\\/|\\(|\\))", " $1 ").replaceFirst("\\s*", "");
 	}
 	
 	/**
@@ -46,8 +46,22 @@ public class RegularExpressions {
 	 * @return the string[]
 	 */
 	String[] identifyTokenType(String in) {
-		//TODO: Implement this method...
-		return null;
+		String str = padTokensWithSpaces(in);
+		
+		String[] tokens = str.split("\\s+");
+		
+		for (int i = 0; i < tokens.length; i++) {
+			if (tokens[i].matches("\\W")) { // Operation
+				tokens[i] = "Operation: " + tokens[i];
+			} else if (tokens[i].matches("\\d+")) { // Integer
+				tokens[i] = "Integer: " + tokens[i];
+			} else if (tokens[i].matches("\\d+.\\d+")) { // Double
+				tokens[i] = "Double: " + tokens[i];
+			} else { // Error
+				tokens[i] = "Error: " + tokens[i];
+			}
+		}
+		return tokens;
 	} 
 	
 	/**
